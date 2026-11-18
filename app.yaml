@@ -1,0 +1,18 @@
+command:
+  - uvicorn
+  - backend.main:app
+  - --host
+  - "0.0.0.0"
+  - --port
+  - "8000"
+
+env:
+  # Recursos do app (Compute > Apps > <app> > Edit > App resources), com estas chaves:
+  #   lakebase -> Database (Lakebase), permissao "Can connect and create"
+  #   llm      -> Serving endpoint do narrador, permissao "Can query"
+  # Sao opcionais: sem eles o jogo sobe mesmo assim e a tela ⚙ CONFIG avisa e deixa
+  # escolher (ou criar) o Lakebase e o modelo em dropdowns.
+  - name: LAKEBASE_RESOURCE
+    valueFrom: lakebase
+  - name: LLM_ENDPOINT
+    valueFrom: llm

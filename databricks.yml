@@ -1,0 +1,50 @@
+# SpaceBricks — deploy com um comando.
+#   databricks bundle deploy --profile <SEU_PROFILE>
+#   databricks bundle run spacebricks --profile <SEU_PROFILE>
+#
+# Cria: projeto Lakebase (Postgres) + Databricks App já ligado ao banco e ao LLM.
+# As tabelas (schema "spacebricks") são criadas automaticamente quando o app sobe.
+
+bundle:
+  name: spacebricks
+
+variables:
+  app_name:
+    description: Nome do app (minúsculas, números e hífen; máx. 30 caracteres)
+    default: spacebricks
+  lakebase_project:
+    description: ID do projeto Lakebase que será criado (o app o recebe pelo recurso "lakebase")
+    default: spacebricks
+  llm_endpoint:
+    description: Endpoint de LLM usado pelo narrador
+    default: databricks-claude-sonnet-4-6
+
+resources:
+  postgres_projects:
+    spacebricks_db:
+      project_id: ${var.lakebase_project}
+      display_name: SpaceBricks
+      pg_version: 17
+
+  apps:
+    spacebricks:
+      name: ${var.app_name}
+      description: SpaceBricks - jogo de nave arcade (projeto de fa, nao oficial) com IA adaptativa e ranking no Lakebase
+      source_code_path: .
+      resources:
+        - name: lakebase
+          postgres:
+            branch: ${resources.postgres_projects.spacebricks_db.name}/branches/production
+            database: ${resources.postgres_projects.spacebricks_db.name}/branches/production/databases/databricks-postgres
+            permission: CAN_CONNECT_AND_CREATE
+        - name: llm
+          serving_endpoint:
+            name: ${var.llm_endpoint}
+            permission: CAN_QUERY
+      permissions:
+        - group_name: users
+          level: CAN_USE
+
+targets:
+  default:
+    default: true
