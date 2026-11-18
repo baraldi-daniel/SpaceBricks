@@ -54,9 +54,13 @@ Chosen on the sign-up screen or in the **☰ MENU** during the match (saved in t
 
 Enemies move in **formation**: the AI shifts the whole block toward where it predicts the player will be, without piling enemies up in a corner.
 
+## Game speed
+
+Five speeds, chosen on the sign-up screen or in the **☰ MENU** (saved in the browser): **LENTA 0.75x**, **NORMAL 1x**, **RÁPIDA 1.25x** (default), **TURBO 1.5x** and **HIPER 2x**. The speed scales everything (enemies, bullets, your fire rate and power durations), and the game runs at the same speed on any display refresh rate (60 Hz, 120 Hz…).
+
 ## In-game menu
 
-Click **☰ MENU** on the scoreboard (or press **ESC**) to resume, change the difficulty, **restart** from scratch, or quit.
+Click **☰ MENU** on the scoreboard (or press **ESC**) to resume, change the difficulty or the speed, **restart** from scratch, or quit.
 
 ## Enemies (problems without Databricks)
 
@@ -117,7 +121,7 @@ One falls every 25–35 s (the first one at ~20 s), and **every defeated boss dr
 | **AI Gateway** | Governance barrier: blocks and **reflects** enemy bullets + rate limit (429) on enemies |
 | **Genie Ontology** | Every enemy you hit **becomes an ally** and starts shooting the others |
 | **Lakeflow Designer** | Blocks fly into place and build **3 bunkers** that absorb enemy bullets (yours go through). They stay until destroyed |
-| **Spark Declarative Pipelines** | **Autopilot** for 10 s: you "declare the outcome" and the ship dodges and aims by itself |
+| **Spark Declarative Pipelines** | **Autopilot** for 10 s: you "declare the outcome" and the ship dodges and aims by itself. Any bullet that would still hit you is dropped by the pipeline expectation (`EXPECT ... DROP`), so you take no damage |
 | **ai_parse_document** | Organizes the chaos into **tables**: enemies and enemy bullets move into cells (columns A, B, C…) and freeze for 8 s. Hitting an enemy deals **damage to the whole column**, and at the end the parsed bullets are fired back at the enemies |
 | **OpenSharing** | A ship **mirrored in another cloud** for 12 s: it copies your (mirrored) moves and your shots. It's a backup: if the copy is hit it disappears and you lose no life; if you are hit, the copy takes over (failover) and you don't lose a life either |
 
@@ -256,7 +260,7 @@ spacebricks/
 | ↑ | Shoot |
 | S / D / U / M | Use a special |
 | SPACE | GENIE super special (when the bar is full) |
-| ESC or ☰ MENU | Menu: resume, difficulty, restart, quit |
+| ESC or ☰ MENU | Menu: resume, difficulty, speed, restart, quit |
 | MÚSICA / EFEITOS buttons | Toggle music / sound effects |
 
 ## License

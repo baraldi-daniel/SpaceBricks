@@ -421,6 +421,9 @@
                             <div class="diff-picker" id="diff-picker"></div>
                             <p class="diff-desc" id="diff-desc"></p>
                         </div>
+                        <div class="form-group"><label>Velocidade do jogo</label>
+                            <div class="diff-picker speed-picker"></div>
+                        </div>
                         <button type="submit" class="btn-play" id="btn-start">INICIAR BATALHA</button>
                         <button type="button" class="btn-case-direct event-only" onclick="showDirectCase()">JÁ TENHO UM CASO REAL &rarr; GANHAR BRINDE PREMIUM</button>
                         <p class="error-msg" id="reg-error"></p>
@@ -478,6 +481,8 @@
                         <label style="display:block;font-size:11px;font-weight:700;color:#ccc;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Dificuldade</label>
                         <div class="diff-picker"></div>
                         <p class="diff-desc"></p>
+                        <label style="display:block;font-size:11px;font-weight:700;color:#ccc;margin:10px 0 6px;text-transform:uppercase;letter-spacing:1px;">Velocidade</label>
+                        <div class="diff-picker speed-picker"></div>
                     </div>
                     <button class="btn-upgrade" style="width:100%;" onclick="restartGame()">&#8635; REINICIAR</button>
                     <button class="btn-secondary" style="width:100%;" onclick="quitGame()">SAIR (SEM SALVAR)</button>
@@ -717,6 +722,27 @@
         try { localStorage.setItem('dbi_event_mode', eventMode ? 'on' : 'off'); } catch(e) {}
         applyEventMode();
     }
+    // ==================== VELOCIDADE DO JOGO ====================
+    const SPEEDS = [
+        { name: 'LENTA',  mult: 0.75, color: '#60A5FA' },
+        { name: 'NORMAL', mult: 1.0,  color: '#00D26A' },
+        { name: 'RÁPIDA', mult: 1.25, color: '#FFD700' },
+        { name: 'TURBO',  mult: 1.5,  color: '#FF6B35' },
+        { name: 'HIPER',  mult: 2.0,  color: '#FF3621' }
+    ];
+    let speedIdx = (() => { try { const v = parseInt(localStorage.getItem('dbi_speed'), 10); return v >= 0 && v < SPEEDS.length ? v : 2; } catch(e) { return 2; } })();
+    let gameClock = 0, lastFrameTs = null, frameAcc = 0;   // relogio do jogo (ms), independente da taxa da tela
+    function setSpeed(i){
+        speedIdx = i;
+        try { localStorage.setItem('dbi_speed', String(i)); } catch(e) {}
+        renderSpeedPicker();
+    }
+    function renderSpeedPicker(){
+        const html = SPEEDS.map((sp, i) =>
+            `<button type="button" class="diff-btn${i === speedIdx ? ' sel' : ''}" style="--c:${sp.color}" onclick="setSpeed(${i});this.blur();">${sp.mult}x<span>${sp.name}</span></button>`
+        ).join('');
+        document.querySelectorAll('.speed-picker').forEach(b => b.innerHTML = html);
+    }
     function addScore(pts){ score += Math.round(pts * difficulty.mult); chargeGenie(GENIE_PER_KILL); }
     function setDifficulty(i){
         difficultyIdx = i; difficulty = DIFFICULTIES[i];
@@ -727,7 +753,7 @@
         const html = DIFFICULTIES.map((d, i) =>
             `<button type="button" class="diff-btn${i === difficultyIdx ? ' sel' : ''}" style="--c:${d.color}" onclick="setDifficulty(${i});this.blur();">${'★'.repeat(i + 1)}<span>${d.name}</span></button>`
         ).join('');
-        document.querySelectorAll('.diff-picker').forEach(box => box.innerHTML = html);
+        document.querySelectorAll('.diff-picker:not(.speed-picker)').forEach(box => box.innerHTML = html);
         document.querySelectorAll('.diff-desc').forEach(desc => { desc.textContent = difficulty.desc; desc.style.color = difficulty.color; });
         const hud = document.getElementById('hud-level'); if (hud) { hud.textContent = difficulty.name; hud.style.color = difficulty.color; }
     }
@@ -760,7 +786,7 @@
         designer: { name: 'LAKEFLOW DESIGNER', color: '#FB923C', desc: 'Monta 3 bunkers que absorvem os tiros inimigos (seus tiros passam)' },
         opensharing: { name: 'OPENSHARING', color: '#4CB8E8', desc: 'Nave espelhada em outra nuvem: copia seus movimentos e tiros e serve de backup' },
         parse:    { name: 'AI_PARSE_DOCUMENT', color: '#F7C9C2', dur: 480, desc: 'Organiza inimigos e tiros em tabelas: dano por coluna e tiros devolvidos no fim' },
-        sdp:      { name: 'SPARK DECLARATIVE PIPELINES', short: 'SDP', color: '#FDA4AF', dur: 600, desc: 'Piloto automático: a nave desvia e mira sozinha por 10s' }
+        sdp:      { name: 'SPARK DECLARATIVE PIPELINES', short: 'SDP', color: '#FDA4AF', dur: 600, desc: 'Piloto automático por 10s: a nave desvia e mira sozinha, e tiros que iriam te acertar são descartados (EXPECT ... DROP)' }
     };
     const SUPER_KEYS = Object.keys(SUPERS), SUPER_DUR = 720;
     const OMNI_WING = [ { k: 'lakebase', off: -115, every: 8 }, { k: 'customerlake', off: -58, every: 18 }, { k: 'lakewatch', off: 58, every: 12 }, { k: 'apps', off: 115, every: 20 } ];
@@ -997,7 +1023,7 @@
             ctx.fillStyle = '#4ADE80'; ctx.font = '6px "Press Start 2P"'; ctx.textAlign = 'center'; ctx.fillText('AI/BI DASHBOARD', l.x, l.y + 37); });
     }
     function autopilotDir(){      // SDP: voce declara o resultado, o pipeline decide o como
-        const cur = ship.x + ship.width / 2, v = ship.speed * 1.35, half = ship.width / 2 + 6;
+        const cur = ship.x + ship.width / 2, v = ship.speed * 1.8, half = ship.width / 2 + 10;
         let lowest = null; for (const e of enemies) if (e.hp > 0 && !e.isClone && !e.isLeak && (!lowest || e.y > lowest.y)) lowest = e;
         const aimX = lowest ? lowest.x + lowest.width / 2 : canvas.width / 2;
         const threats = [];
@@ -2151,9 +2177,9 @@
         if(invertControls>0){invertControls--;mv=-mv;}       // prompt injection do SHADOW AI
         const autoPilot=!!(superFx&&superFx.k==='sdp');
         if(autoPilot) mv=autopilotDir();                        // SDP: piloto automatico
-        ship.x+=mv*ship.speed*(autoPilot?1.35:1);
+        ship.x+=mv*ship.speed*(autoPilot?1.8:1);
         ship.x=Math.max(0,Math.min(canvas.width-ship.width,ship.x));
-        const now=Date.now();
+        gameClock+=16.667; const now=gameClock;   // cadencia do tiro acompanha a velocidade do jogo
         if((keys['ArrowUp']||touchFire||autoPilot)&&now-lastFireTime>difficulty.fireRate*(weapon?WEAPONS[weapon.k].rate:1)){firePlayer();lastFireTime=now;Sound.sfx.shoot();}
         updatePickups();
         updateSupers();
@@ -2333,6 +2359,11 @@
         for(let bi=enemyBullets.length-1;bi>=0;bi--){const b=enemyBullets[bi];
             if(b.x>ship.x&&b.x<ship.x+ship.width&&b.y>ship.y&&b.y<ship.y+ship.height){
                 enemyBullets.splice(bi,1);
+                if(superFx&&superFx.k==='sdp'){   // SDP: a expectation descarta o tiro antes do impacto
+                    spawnExplosion(b.x,b.y,'#FDA4AF');
+                    if(!floatTexts.some(f=>f.text.startsWith('EXPECT')&&f.life>30))floatTexts.push({x:ship.x+ship.width/2,y:ship.y-24,text:'EXPECT ... DROP',color:'#FDA4AF',life:45});
+                    continue;
+                }
                 if(unityCatalogShield>0){
                     // Shield absorbs hit
                     spawnExplosion(ship.x+ship.width/2,ship.y+ship.height/2,'#3B82F6');
@@ -2354,6 +2385,7 @@
         for(let i=enemies.length-1;i>=0;i--){const e=enemies[i]; if(!e.isLeak) continue;
             if(e.x<ship.x+ship.width&&e.x+e.width>ship.x&&e.y<ship.y+ship.height&&e.y+e.height>ship.y){
                 enemies.splice(i,1); spawnExplosion(e.x+e.width/2,e.y+e.height/2,'#EF4444');
+                if(superFx&&superFx.k==='sdp')continue;
                 if(unityCatalogShield>0){Sound.sfx.shield();continue;}
                 if(osActive()){osFailover();continue;}
                 lives--; Sound.sfx.playerHit(); updateHUD(); if(lives<=0){endGame();return;}
@@ -2455,7 +2487,18 @@
         drawWeaponHud(spX+6+170);
     }
 
-    function gameFrame(){update();draw();if(gameState==='playing')gameLoop=requestAnimationFrame(gameFrame);}
+    // Passo fixo de 60 updates/s * velocidade escolhida, independente da taxa de atualizacao da tela
+    function gameFrame(ts){
+        if (typeof ts !== 'number') { ts = performance.now(); lastFrameTs = null; }
+        const dt = lastFrameTs === null ? 16.667 : Math.min(50, ts - lastFrameTs);
+        lastFrameTs = ts;
+        frameAcc += (dt / 16.667) * SPEEDS[speedIdx].mult;
+        let n = 0;
+        while (frameAcc >= 1 && n < 8 && gameState === 'playing') { update(); frameAcc -= 1; n++; }
+        if (frameAcc > 3) frameAcc = 0;
+        draw();
+        if (gameState === 'playing') gameLoop = requestAnimationFrame(gameFrame);
+    }
 
     function updateHUD(){
         document.getElementById('hud-score').textContent=score;
@@ -2772,6 +2815,7 @@
     loadHomeLeaderboard();
     loadStatus();
     renderDifficultyPicker();
+    renderSpeedPicker();
     applyEventMode();
 
     // ==================== INPUT ====================
