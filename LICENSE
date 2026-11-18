@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ---------------------------------------------------------------------------
-Trademarks / Marcas
+Trademarks
 
 This license covers only the source code of this project. It does NOT grant
 any right to use the names, logos or trademarks of Databricks, Inc. or of any
@@ -30,7 +30,3 @@ referenced in this game (e.g. Lakebase, Unity Catalog, Delta, MLflow, Spark,
 Genie, Omnigent, AI Gateway, Lakeflow, CustomerLake, Lakewatch, Databricks Apps)
 are trademarks of their respective owners. This is an unofficial fan project,
 not affiliated with, sponsored or endorsed by Databricks.
-
-Esta licença cobre apenas o código-fonte. Ela NÃO concede nenhum direito sobre
-nomes, logos ou marcas da Databricks ou de outras empresas. Este é um projeto
-de fã, não oficial, sem afiliação nem endosso da Databricks.

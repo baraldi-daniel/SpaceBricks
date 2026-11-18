@@ -1,254 +1,264 @@
 # SpaceBricks
 
-> **⚠️ Projeto pessoal e não oficial.** Este é um jogo de fã, feito por diversão e para demonstração, sem fins comerciais. **Não é um produto da Databricks e não é afiliado, patrocinado nem endossado pela Databricks.**
+> **⚠️ Unofficial personal project.** This is a fan-made game, built for fun and for demos, with no commercial purpose. **It is not a Databricks product and is not affiliated with, sponsored by, or endorsed by Databricks.**
 >
-> Databricks, o logo da Databricks e os nomes de produtos citados (Lakebase, Lakehouse//RT, Unity Catalog, Delta, MLflow, Spark, Genie, Genie Ontology, Omnigent, OpenSharing, AI Gateway, Lakeflow Designer, Spark Declarative Pipelines, CustomerLake, Lakewatch, Databricks Apps, AI/BI, `ai_parse_document`, entre outros) são marcas de seus respectivos donos e aparecem aqui só como referência temática. Os ícones do jogo são desenhos próprios feitos em código, inspirados nesses produtos; nenhum arquivo de imagem oficial é distribuído neste repositório.
+> Databricks, the Databricks logo and the product names referenced here (Lakebase, Lakehouse//RT, Unity Catalog, Delta, MLflow, Spark, Genie, Genie Ontology, Omnigent, OpenSharing, AI Gateway, Lakeflow Designer, Spark Declarative Pipelines, CustomerLake, Lakewatch, Databricks Apps, AI/BI, `ai_parse_document`, among others) are trademarks of their respective owners and appear only as a thematic reference. The in-game icons are original drawings made in code, inspired by those products; no official image files are distributed in this repository.
 >
-> A música e os efeitos sonoros são originais, gerados em código (WebAudio). Se algum detentor de marca preferir que algo seja removido, basta abrir uma issue.
+> The music and sound effects are original and generated in code (WebAudio). If any trademark owner would prefer something to be removed, just open an issue.
 
-Jogo de nave arcade com tema de dados e IA, feito por fã para estandes e eventos. Os jogadores pilotam uma nave e destroem problemas reais de data engineering e IA, enquanto uma rede neural aprende seu estilo de jogo em tempo real.
+An arcade space shooter with a data & AI theme, made by a fan for booths and events. Players fly a ship and destroy real data engineering and AI problems, while a neural network learns their play style in real time.
 
-## O que é
+> The game UI is in **Brazilian Portuguese**. In-game labels are quoted below as they appear on screen.
 
-- **Jogo arcade de nave** (shoot 'em up) com temática Databricks
-- **IA adaptativa** com rede neural (MLP) que aprende o padrão de movimento do jogador durante a partida
-- **Narrador IA** usando Claude Sonnet via Foundation Model API - gera frases contextuais baseadas no comportamento do jogador
-- **Ranking ao vivo** armazenado no Lakebase (PostgreSQL gerenciado)
-- **Captura de leads**: nome, email, empresa e telefone obrigatórios para jogar
-- **Especiais temáticos**: Spark, Delta, Unity Catalog e MLflow com efeitos únicos
+## What it is
 
-## Fluxo do estande
+- **Arcade space shooter** (shoot 'em up) with a data & AI theme
+- **Adaptive AI**: a neural network (MLP) learns the player's movement pattern during the match
+- **AI narrator** using Claude Sonnet via the Foundation Model API, generating contextual one-liners based on how the player is doing
+- **Live leaderboard** stored in Lakebase (managed PostgreSQL)
+- **Event mode** (optional): lead capture (name, e-mail, company, phone), real use cases and giveaways
+- **Themed specials, power-ups, super capsules and mega bosses** (see below)
+
+## Booth flow (event mode)
 
 ```
-Home (ranking + galeria) → Cadastro → Jogo → Brinde
-                                              ↓
-                                    Caso real? → Brinde Premium
+Home (leaderboard + gallery) → Sign-up → Game → Giveaway
+                                                  ↓
+                                        Real use case? → Premium giveaway
 ```
 
-1. Visitante vê o ranking e a galeria de inimigos/poderes
-2. Preenche cadastro (nome, email, empresa, telefone)
-3. Joga contra a IA que aprende em tempo real
-4. Ao perder, ganha um **brinde**
-5. Opcionalmente descreve um caso real de dados/IA e ganha um **brinde premium**
+1. The visitor sees the leaderboard and the gallery of enemies and powers
+2. Fills in the sign-up form (name, e-mail, company, phone)
+3. Plays against the AI that learns in real time
+4. When the game is over, wins a **giveaway**
+5. Optionally describes a real data/AI use case and wins a **premium giveaway**
 
-## Níveis de dificuldade
+## Event mode vs. just play
 
-Escolhidos na tela de cadastro ou no **☰ MENU** durante a partida (a escolha fica salva no navegador):
+The sign-up screen has a **"Modo evento"** (event mode) checkbox, checked by default. The choice is saved in the browser:
 
-| Nível | Vidas | Vida dos inimigos | Seu tiro | Tiros inimigos | Mira da IA | Pontos |
-|-------|-------|-------------------|----------|----------------|------------|--------|
-| ★ Muito fácil | 5 | morrem com 1 tiro (chefões 30%) | muito rápido | máx. 5 na tela | erra muito | x0.5 |
-| ★★ Fácil | 4 | 50% | rápido | máx. 9 | erra bastante | x0.75 |
-| ★★★ Normal | 3 | 70% | médio | máx. 14 | média | x1 |
-| ★★★★ Difícil | 3 | 100% | normal | máx. 22 | precisa | x1.5 |
-| ★★★★★ Insano | 2 | 120% | normal | máx. 32 | muito precisa | x2 |
+- **Checked**: full sign-up (name, e-mail, company, phone), real use cases and giveaways. Meant for booths.
+- **Unchecked**: just an (optional) nickname and play. No mention of use cases or giveaways anywhere.
 
-Os inimigos se movem em **formação**: a IA desloca o bloco inteiro na direção prevista do jogador, sem amontoar os inimigos num canto.
+## Difficulty levels
 
-## Modo evento x só jogar
+Chosen on the sign-up screen or in the **☰ MENU** during the match (saved in the browser):
 
-Na tela de cadastro há o checkbox **Modo evento** (marcado por padrão; a escolha fica salva no navegador):
+| Level | Lives | Enemy HP | Your fire rate | Enemy bullets | AI aim | Score |
+|-------|-------|----------|----------------|---------------|--------|-------|
+| ★ Muito fácil (very easy) | 5 | die in 1 hit (bosses 30%) | very fast | max. 5 on screen | misses a lot | x0.5 |
+| ★★ Fácil (easy) | 4 | 50% | fast | max. 9 | misses often | x0.75 |
+| ★★★ Normal | 3 | 70% | medium | max. 14 | average | x1 |
+| ★★★★ Difícil (hard) | 3 | 100% | normal | max. 22 | accurate | x1.5 |
+| ★★★★★ Insano (insane) | 2 | 120% | normal | max. 32 | very accurate | x2 |
 
-- **Marcado**: cadastro completo (nome, e-mail, empresa, telefone), casos de uso reais e brindes, para estandes.
-- **Desmarcado**: só um apelido (opcional) e jogar. Nenhuma menção a casos de uso ou brindes.
+Enemies move in **formation**: the AI shifts the whole block toward where it predicts the player will be, without piling enemies up in a corner.
 
-## Menu durante a partida
+## In-game menu
 
-Clique em **☰ MENU** no placar (ou aperte **ESC**): continuar, trocar a dificuldade, **reiniciar** do zero ou sair.
+Click **☰ MENU** on the scoreboard (or press **ESC**) to resume, change the difficulty, **restart** from scratch, or quit.
 
-## Inimigos (problemas sem Databricks)
+## Enemies (problems without Databricks)
 
-| Inimigo | Descrição |
-|---------|-----------|
-| Data Silo | Dados isolados entre departamentos |
-| Sem Guardrails | IA sem limites de segurança |
-| Vendor Lock-in | Preso em formatos proprietários |
-| Lentidão Crônica | Queries de horas, zero performance |
-| Sem Federation | Impossível consultar entre fontes |
-| Alucinação IA | Modelos inventando respostas |
+| Enemy (on screen) | Description |
+|-------------------|-------------|
+| Data Silo | Data isolated between departments |
+| Sem Guardrails (no guardrails) | AI with no safety limits |
+| Vendor Lock-in | Stuck in proprietary formats |
+| Lentidão Crônica (chronic slowness) | Hours-long queries, zero performance |
+| Sem Federation (no federation) | Impossible to query across sources |
+| Alucinação IA (AI hallucination) | Models making up answers |
 
-## Chefões e mega chefões
+## Bosses and mega bosses
 
-| Wave | Chefão | Poder |
-|------|--------|-------|
-| 5 | Data Swamp | Spawna mini-inimigos |
-| 10 | Shadow IT | Teleporta pela tela |
-| **12** | **MEGA: Shadow AI** | Cria 2 clones que o curam e embaralham; prompt injection inverte seus controles. Lakewatch/Genie Ontology revelam o verdadeiro |
-| 15 | Pipeline Hell | Rajada de 5 tiros |
-| **18** | **MEGA: Data Breach** | Blindado por 4 placas (quebre-as primeiro), rouba seus especiais e solta drones de vazamento |
-| 20 | Dados Brutos | Joga "lixo" na tela |
-| **24** | **MEGA: Cloud Bill** | Cresce, se regenera e se divide em dois na metade da vida; o AI Gateway corta o budget (regeneração) |
-| 25 | Total Lock-in | Reduz velocidade da nave |
+| Wave | Boss | Power |
+|------|------|-------|
+| 5 | Data Swamp | Spawns mini enemies |
+| 10 | Shadow IT | Teleports around the screen |
+| **12** | **MEGA: Shadow AI** | Creates 2 clones that heal it and shuffle positions; prompt injection inverts your controls. Lakewatch / Genie Ontology reveal the real one |
+| 15 | Pipeline Hell | 5-bullet burst |
+| **18** | **MEGA: Data Breach** | Shielded by 4 armor plates (break them first), steals your specials and releases leak drones that chase you |
+| 20 | Dados Brutos (raw data) | Throws "garbage" on screen |
+| **24** | **MEGA: Cloud Bill** | Grows, regenerates and splits in two at half health; AI Gateway cuts its budget (regeneration) |
+| 25 | Total Lock-in | Slows your ship down |
 
-Depois da wave 25 os chefões voltam em ciclo, cada vez mais fortes.
+After wave 25 the bosses keep coming back in a cycle, stronger each time.
 
-## Poderes especiais (teclas)
+## Special powers (keys)
 
-| Tecla | Poder | Efeito | Forte contra |
-|-------|-------|--------|-------------|
-| S | Spark | Barreira de mísseis pela tela toda | Lentidão Crônica |
-| D | Delta | Caixa que agrupa e destrói inimigos | Data Silo, Vendor Lock-in |
-| U | Unity Catalog | Escudo por 5 segundos que dispara rajadas de tiros radiais | Sem Federation, Data Silo |
-| M | MLflow | Míssil autônomo que caça inimigos por 6s | Sem Guardrails, Alucinação IA |
+| Key | Power | Effect | Strong against |
+|-----|-------|--------|----------------|
+| S | Spark | Barrage of missiles across the whole screen | Lentidão Crônica |
+| D | Delta | Box that groups enemies and destroys them | Data Silo, Vendor Lock-in |
+| U | Unity Catalog | 5-second shield that fires bursts of radial shots | Sem Federation, Data Silo |
+| M | MLflow | Autonomous missile that hunts enemies for 6 s | Sem Guardrails, Alucinação IA |
 
-### Power-ups de tiro
+Specials are earned by destroying enemies (16 kills = 1 random special, max. 3 of each).
 
-De vez em quando cai uma cápsula do alto da tela (a cada 15–25 s, ou raramente ao destruir um inimigo). Encoste a nave para pegar. Dura 15 s; uma nova substitui a atual.
+### Weapon power-ups
 
-| Power-up | Tiro |
+Every now and then a capsule falls from the top of the screen (every 15–25 s, or rarely when an enemy is destroyed). Touch it with your ship to pick it up. It lasts 15 s; a new one replaces the current one.
+
+| Power-up | Shot |
 |----------|------|
-| **Lakebase** | Tiro duplo rapidíssimo (transações em alta velocidade) |
-| **CustomerLake** | Leque de 5 tiros: atinge todos os segmentos |
-| **Lakewatch** | Tiro teleguiado que persegue as ameaças (dano 2) |
-| **Databricks Apps** | Bloco pesado que atravessa até 6 inimigos (dano 3) |
-| **Lakehouse//RT** | Raio instantâneo (latência zero): acerta na hora o 1º inimigo da coluna |
+| **Lakebase** | Super-fast double shot (high-speed transactions) |
+| **CustomerLake** | 5-shot fan: hits every segment |
+| **Lakewatch** | Homing shot that hunts threats (damage 2) |
+| **Databricks Apps** | Heavy block that pierces up to 6 enemies (damage 3) |
+| **Lakehouse//RT** | Instant beam (zero latency): immediately hits the first enemy in the column |
 
-### Super cápsulas (raras, douradas)
+### Super capsules (rare, golden)
 
-Cai uma a cada 25–35 s (a primeira aos ~20 s) e **todo chefão derrotado solta uma**. Elas saem de um "saco embaralhado": nenhuma repete antes de todas terem aparecido. Duram 12 s; cada uma faz algo que só ela permite:
+One falls every 25–35 s (the first one at ~20 s), and **every defeated boss drops one**. They come out of a "shuffled bag": none repeats before all of them have appeared. Each one does something only it can do:
 
-| Super cápsula | Efeito |
+| Super capsule | Effect |
 |---------------|--------|
-| **Omnigent** | Esquadrão de 4 agentes (estrelas-do-mar) ao seu lado, cada um disparando um tiro diferente ao mesmo tempo |
-| **AI Gateway** | Barreira de governança: bloqueia e **devolve** os tiros inimigos + rate limit (429) nos inimigos |
-| **Genie Ontology** | Cada inimigo atingido **vira aliado** e passa a atirar nos outros |
-| **Lakeflow Designer** | Os blocos voam e montam **3 bunkers** que absorvem os tiros inimigos (os seus passam). Ficam até serem destruídos |
-| **Spark Declarative Pipelines** | **Piloto automático** por 10 s: você "declara o resultado" e a nave desvia e mira sozinha |
-| **ai_parse_document** | Organiza o caos em **tabelas**: inimigos e tiros inimigos vão para células (colunas A, B, C…) e ficam congelados por 8 s. Acertar um inimigo dá **dano na coluna inteira** e, no fim, os tiros parseados são devolvidos contra os inimigos |
-| **OpenSharing** | Nave **espelhada em outra nuvem** por 12 s: copia seus movimentos (espelhados) e seus tiros. É um backup: se a cópia for atingida ela some sem você perder vida; se você for atingido, a cópia assume (failover) e você também não perde vida |
+| **Omnigent** | Squad of 4 agents (starfish) beside you, each firing a different weapon at the same time |
+| **AI Gateway** | Governance barrier: blocks and **reflects** enemy bullets + rate limit (429) on enemies |
+| **Genie Ontology** | Every enemy you hit **becomes an ally** and starts shooting the others |
+| **Lakeflow Designer** | Blocks fly into place and build **3 bunkers** that absorb enemy bullets (yours go through). They stay until destroyed |
+| **Spark Declarative Pipelines** | **Autopilot** for 10 s: you "declare the outcome" and the ship dodges and aims by itself |
+| **ai_parse_document** | Organizes the chaos into **tables**: enemies and enemy bullets move into cells (columns A, B, C…) and freeze for 8 s. Hitting an enemy deals **damage to the whole column**, and at the end the parsed bullets are fired back at the enemies |
+| **OpenSharing** | A ship **mirrored in another cloud** for 12 s: it copies your (mirrored) moves and your shots. It's a backup: if the copy is hit it disappears and you lose no life; if you are hit, the copy takes over (failover) and you don't lose a life either |
 
-### Vida extra: AI/BI Dashboard
+### Extra life: AI/BI Dashboard
 
-De vez em quando (no máximo a cada ~40 s, só depois que você perdeu alguma vida) cai a cápsula verde **AI/BI Dashboard**: encoste para ganhar **+1 vida** (máximo 9).
+Every now and then (at most every ~40 s, and only after you have lost a life) the green **AI/BI Dashboard** capsule falls: touch it to get **+1 life** (max. 9).
 
-### Super especial: GENIE ✦
+### Super special: GENIE ✦
 
-A barra **GENIE** (canto inferior esquerdo, com a lâmpada) enche conforme você destrói inimigos (~50 inimigos). Quando ficar cheia, aperte **ESPAÇO** (no celular, o botão ✦).
+The **GENIE** bar (bottom-left corner, with the lamp) fills up as you destroy enemies (~50 enemies). When it is full, press **SPACE** (on mobile, the ✦ button).
 
-O Genie sai da lâmpada e vira um **agente autônomo** por 15 segundos, flutuando devagar pela tela:
-- trava a mira em até 4 inimigos ao mesmo tempo (retículas **LOCK**)
-- dispara laser teleguiado (30 tiros/s) e salvas de 8 micro-mísseis
-- derruba automaticamente os tiros inimigos que chegam perto de você (+3 s de escudo no lançamento)
-- persegue os inimigos pelas waves seguintes e depois volta para a sua nave
+The Genie leaves the lamp and becomes an **autonomous agent** for 15 seconds, slowly floating across the screen:
+- locks on up to 4 enemies at once (**LOCK** reticles)
+- fires homing lasers (30 shots/s) and salvos of 8 micro-missiles
+- automatically shoots down enemy bullets that get close to you (+3 s shield on launch)
+- chases enemies into the next waves and then returns to your ship
 
-Os especiais são coletados matando inimigos (10 kills = 1 especial aleatório, máx 3 de cada).
+## Game AI
 
-## IA do jogo
+### Neural network (in-game)
+- MLP with backpropagation: 6 inputs → 8 hidden (leaky ReLU) → 1 output
+- Inputs: player position, velocity, acceleration + quadratic features
+- Trains online via SGD every 3 frames
+- Starts competent (base heuristic) and visibly improves during the match
+- Resets for every new player
 
-### Rede Neural (in-game)
-- MLP com backpropagation: 6 inputs → 8 hidden (leaky ReLU) → 1 output
-- Inputs: posição, velocidade, aceleração do jogador + features quadráticas
-- Treina online via SGD a cada 3 frames
-- Começa competente (heurística base) e melhora visivelmente durante a partida
-- Reseta a cada novo jogador
-
-### Narrador IA (entre waves)
-- Claude Sonnet 4.6 via Foundation Model API
-- Gera frases contextuais baseadas no wave, score, vidas e bias de posição do jogador
-- Fallback local se a API não estiver disponível
+### AI narrator (between waves)
+- Claude Sonnet 4.6 via the Foundation Model API
+- Generates contextual lines based on the wave, score, lives and the player's position bias
+- Local fallback lines if the API is not available
 
 ## Easter eggs
 
-- **Lakehouse Code**: digitar `genie` durante a partida, todos os especiais x2 + barra do GENIE cheia (1 uso por partida)
-- **Digitar "lakehouse"**: +3 vidas (1 uso por partida)
+- **Lakehouse Code**: type `genie` during the match → all specials x2 + GENIE bar full (once per match)
+- Type **`lakehouse`**: +3 lives (once per match)
 
 ## Deploy
 
-### Opção 1: apontar o Databricks Apps para este repositório (sem CLI)
+### Option 1: point Databricks Apps to this repository (no CLI)
 
-1. No workspace: **Compute → Apps → Create app → Custom app**.
-2. Em **Configure Git repository**, informe a URL deste repositório (provider GitHub) e o branch `main`. Repositório privado precisa de uma credencial Git no app.
+1. In the workspace: **Compute → Apps → Create app → Custom app**.
+2. In **Configure Git repository**, enter this repository's URL (provider GitHub) and the `main` branch. A private repository needs a Git credential on the app.
 3. **Deploy → From Git**.
 
-Pronto, o jogo já funciona. Sem Lakebase, o ranking e os cadastros ficam num **banco local temporário**, que **some quando o app reinicia**. Para guardar de vez:
+That's it, the game already works. If no Lakebase is configured, the app owner sees a warning on the home screen and the leaderboard / sign-ups are stored in a **temporary local database** that is **lost when the app restarts**. To make it persistent, either:
 
-4. Crie um projeto **Lakebase** chamado `spacebricks`.
-5. No app: **Edit → App resources → Add resource → Database (Lakebase)**, escolha o projeto `spacebricks`, branch `production`, database `databricks_postgres`, permissão **Can connect and create**. Depois faça o deploy de novo.
-6. (Opcional) Para o narrador com IA: **Add resource → Serving endpoint** `databricks-claude-sonnet-4-6`, permissão **Can query**. Sem isso o narrador usa frases prontas.
+- open **⚙ CONFIG** on the home screen (see below) and pick an existing Lakebase or **create a new one** right there; or
+- add the resources on the app page: **Edit → App resources → Add resource → Database (Lakebase)** with permission **Can connect and create** (resource key `lakebase`), and optionally a **Serving endpoint** such as `databricks-claude-sonnet-4-6` with permission **Can query** (resource key `llm`). Then redeploy. The app detects them automatically.
 
-O app cria o schema `spacebricks` e as tabelas sozinho. Confira em `<URL do app>/api/debug`: `"mode": "lakebase"` (permanente) ou `"mode": "local"` (temporário).
+Check `<app URL>/api/debug`: `"mode": "lakebase"` (persistent) or `"mode": "local"` (temporary).
 
-### Opção 2: bundle (2 comandos, cria tudo automaticamente)
+### Option 2: bundle (2 commands, creates everything automatically)
 
-Pré-requisitos: [Databricks CLI](https://docs.databricks.com/dev-tools/cli/install.html) >= 0.270 e um workspace com **Databricks Apps** e **Lakebase** habilitados.
+Prerequisites: [Databricks CLI](https://docs.databricks.com/dev-tools/cli/install.html) >= 0.270 and a workspace with **Databricks Apps** and **Lakebase** enabled.
 
 ```bash
-git clone <este-repo> && cd spacebricks
-databricks auth login --host https://<seu-workspace>.cloud.databricks.com --profile meu-ws   # só na 1ª vez
+git clone <this-repo> && cd spacebricks
+databricks auth login --host https://<your-workspace>.cloud.databricks.com --profile my-ws   # first time only
 
-databricks bundle deploy --profile meu-ws          # cria Lakebase + App e sobe o código
-databricks bundle run spacebricks --profile meu-ws    # inicia o app e mostra a URL
+databricks bundle deploy --profile my-ws             # creates Lakebase + App and uploads the code
+databricks bundle run spacebricks --profile my-ws    # starts the app and prints the URL
 ```
 
-Pronto. O bundle (`databricks.yml`) cria tudo sozinho:
+The bundle (`databricks.yml`) creates everything:
 
-- **Projeto Lakebase** `spacebricks` (Postgres 17)
-- **Databricks App** `spacebricks`, já com acesso ao banco (`CAN_CONNECT_AND_CREATE`) e ao LLM do narrador (`CAN_QUERY`)
-- Permissão `CAN_USE` para o grupo `users`
-- O schema `spacebricks` e as tabelas `players` / `scores` são criados automaticamente quando o app sobe
+- **Lakebase project** `spacebricks` (Postgres 17)
+- **Databricks App** `spacebricks`, already with access to the database (`CAN_CONNECT_AND_CREATE`) and to the narrator LLM (`CAN_QUERY`)
+- `CAN_USE` permission for the `users` group
+- The app creates its own schema (named after the app, e.g. `spacebricks`) and the `players` / `scores` tables on startup
 
-Para atualizar depois de mudar o código: rode os mesmos dois comandos de novo.
+To update after changing the code, run the same two commands again.
 
-Para remover tudo: `databricks bundle destroy --profile meu-ws`
+To remove everything: `databricks bundle destroy --profile my-ws`
 
-### Personalizar (opcional)
+#### Customize (optional)
 
 ```bash
-databricks bundle deploy --profile meu-ws \
-  --var app_name=spacebricks-evento-sp \
+databricks bundle deploy --profile my-ws \
+  --var app_name=spacebricks-event \
   --var llm_endpoint=databricks-claude-sonnet-4-5
 ```
 
-| Variável | Default | Descrição |
-|----------|---------|-----------|
-| `app_name` | `spacebricks` | Nome do app (minúsculas/hífen, máx. 30) |
-| `lakebase_project` | `spacebricks` | Projeto Lakebase criado pelo bundle (se mudar, mude também `LAKEBASE_PROJECT` no `app.yaml`) |
-| `llm_endpoint` | `databricks-claude-sonnet-4-6` | Endpoint de LLM do narrador (sem ele o jogo usa frases prontas) |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `app_name` | `spacebricks` | App name (lowercase letters, digits and hyphens; max. 30) |
+| `lakebase_project` | `spacebricks` | Lakebase project created by the bundle (passed to the app through the `lakebase` resource) |
+| `llm_endpoint` | `databricks-claude-sonnet-4-6` | Narrator LLM endpoint (without it the game uses canned lines) |
 
-Teste rápido depois do deploy: abra `<URL do app>/api/debug`, que deve mostrar `"mode": "lakebase"` e `"status": "connected to Lakebase!"`.
+Quick check after deploying: open `<app URL>/api/debug`, which should show `"mode": "lakebase"` and `"status": "connected to Lakebase!"`.
 
-## Som
+## ⚙ CONFIG screen (app owner only)
 
-- Música chiptune original (menu, jogo e chefão) e efeitos sonoros, tudo gerado em WebAudio (sem arquivos de áudio)
-- Botões **MUSICA** e **EFEITOS** no canto da tela ligam/desligam cada um; a escolha fica salva no navegador
-- A música começa no primeiro clique/tecla (política de autoplay dos navegadores)
+On the home screen the app owner (the app creator, or the e-mails in the `SPACEBRICKS_ADMINS` environment variable) sees a **⚙ CONFIG** button:
 
-## Estrutura
+- **Lakebase dropdown**: projects visible to the app, **"Criar novo Lakebase"** (create a new one, owned by the app's service principal), "Outro" (type an ID), or the temporary local database
+- **LLM dropdown**: chat model endpoints available to the app, or "Sem IA" (canned narrator lines)
+- **SALVAR E TESTAR** (save & test) tests the connection and the model, explains how to fix missing permissions, and saves the choice in the workspace so it survives restarts
+- Warnings are shown when no Lakebase or model is available
+
+## Sound
+
+- Original chiptune music (menu, game and boss) and sound effects, all generated with WebAudio (no audio files)
+- The **MÚSICA** (music) and **EFEITOS** (effects) buttons in the corner turn each one on/off; the choice is saved in the browser
+- Music starts on the first click/key press (browser autoplay policy)
+
+## Project structure
 
 ```
 spacebricks/
-├── LICENSE               # MIT (só o código; não cobre marcas)
-├── databricks.yml        # Bundle: Lakebase + App + permissões (deploy em 1 comando)
-├── app.yaml              # Comando e variáveis de ambiente do App
-├── requirements.txt      # Dependências Python
-├── README.md             # Este arquivo
+├── LICENSE               # MIT (code only; does not cover trademarks)
+├── databricks.yml        # Bundle: Lakebase + App + permissions (1-command deploy)
+├── app.yaml              # App command and environment variables
+├── requirements.txt      # Python dependencies
+├── README.md             # This file
 ├── backend/
 │   ├── __init__.py
-│   └── main.py           # API FastAPI + Lakebase + Foundation Models
+│   └── main.py           # FastAPI API + Lakebase + Foundation Models + config
 └── frontend/
-    └── index.html        # Jogo completo (HTML5 Canvas + JS + WebAudio)
+    └── index.html        # The whole game (HTML5 Canvas + JS + WebAudio)
 ```
 
-## Stack técnica
+## Tech stack
 
-- **Frontend**: HTML5 Canvas, JavaScript puro, CSS
+- **Frontend**: HTML5 Canvas, plain JavaScript, CSS
 - **Backend**: FastAPI + Uvicorn
-- **Banco**: Lakebase Autoscaling (PostgreSQL gerenciado)
-- **IA in-game**: Rede Neural MLP (JavaScript, client-side)
-- **IA narrador**: Claude Sonnet 4.6 via Foundation Model API
+- **Database**: Lakebase Autoscaling (managed PostgreSQL), with a temporary SQLite fallback
+- **In-game AI**: MLP neural network (JavaScript, client-side)
+- **AI narrator**: Claude Sonnet 4.6 via the Foundation Model API
 - **Deploy**: Databricks Apps
 
-## Controles
+## Controls
 
-| Tecla | Ação |
-|-------|------|
-| ← → ou A/D | Mover nave |
-| ↑ | Atirar |
-| S/D/U/M | Usar especial |
-| ESPAÇO | Super especial GENIE (barra cheia) |
-| ESC ou ☰ MENU | Menu: continuar, dificuldade, reiniciar, sair |
-| Botões MUSICA / EFEITOS | Liga/desliga música e efeitos |
+| Key | Action |
+|-----|--------|
+| ← → or A/D | Move the ship |
+| ↑ | Shoot |
+| S / D / U / M | Use a special |
+| SPACE | GENIE super special (when the bar is full) |
+| ESC or ☰ MENU | Menu: resume, difficulty, restart, quit |
+| MÚSICA / EFEITOS buttons | Toggle music / sound effects |
 
-## Licença
+## License
 
-O código está sob a licença MIT (veja [`LICENSE`](LICENSE)). A licença cobre só o código: **não** concede direitos sobre nomes, logos ou marcas da Databricks ou de terceiros.
+The code is licensed under the MIT License (see [`LICENSE`](LICENSE)). The license covers the code only: it does **not** grant any rights to the names, logos or trademarks of Databricks or any third party.
